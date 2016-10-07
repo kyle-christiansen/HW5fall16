@@ -28,7 +28,7 @@ Given /^I am on the RottenPotatoes home page$/ do
    click_on "More about #{title}"
  end
 
- Then /^(?:|I )should see "([^"]*)"$/ do |text|
+ Then /^(?:|I )should see "(.*?)"$/ do |text|
     expect(page).to have_content(text)
  end
 
@@ -73,12 +73,13 @@ Then /^I should see only movies rated: "(.*?)"$/ do |arg1|
     moviesWithRating = 0
     ratings = arg1.split(', ')
     
+    #Check to make sure the number of results match
     ratings.each do |rating|
         moviesWithRating += Movie.where(rating: "#{rating}").size
     end
     realMovieAmount = (moviesWithRating == all("tr").size - 1)
     
-    
+    #make sure all the movie have the correct ratings
     invalidMovies=false
     all("tr").each do |row|
         foundRating = false
@@ -122,12 +123,11 @@ When /^I have opted to see movies in alphabetical order$/ do
     click_link("title_header")
 end
 
-
-
 When /^I have opted to see movies in order of release date$/ do
     click_link("release_date_header")
 end
 
+#make sure the movies are in order
 Then /^I should see the title "(.*?)" before "(.*?)"$/ do |arg1, arg2|
     pageBody = page.body
     movie1 = pageBody.index(arg1)
@@ -136,6 +136,7 @@ Then /^I should see the title "(.*?)" before "(.*?)"$/ do |arg1, arg2|
     expect(defined?(movie1) && defined?(movie2) && movie1 < movie2).to be_truthy
 end
 
+#make sure all the movies are there
 Then /^I should see all the movies$/ do
     allMovies = all('tr').size == Movie.all.size+1
     expect(allMovies).to be_truthy
